@@ -120,8 +120,8 @@ class BlockMaker:
         return self.__NodeList
 
 # blockmaker = BlockMaker()
-# blockmaker.seturl("https://blog.naver.com/wlstngl/221456444824")
+# blockmaker.seturl("https://news.naver.com/main/ranking/read.nhn?mid=etc&sid1=111&rankingType=popular_day&oid=016&aid=0001519348&date=20190405&type=1&rankingSeq=1&rankingSectionId=100")
 # blocklist = blockmaker.makeblock()
-# extractor = ContentExtractor.ContentExtractor(2)
+# extractor = ContentExtractor.ContentExtractor(1)
 # extractor.setblocklist(blocklist)
 # extractor.extractcontent()

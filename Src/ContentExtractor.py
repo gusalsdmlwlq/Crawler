@@ -6,15 +6,20 @@ class ContentExtractor:
     def __init__(self, mode):
         self.mode = mode
         if mode == 1:
+            self.classifier_path = "model\svm_news.pkl"
+            self.classifier_title_path = "model\svm_news_title.pkl"
+            self.sc_path = "model\sc_news.pkl"
+            self.sc_title_path = "model\sc_news_title.pkl"
+        elif mode == 2:
+            self.classifier_path = "model\svm_blog.pkl"
+            self.classifier_title_path = "model\svm_blog_title.pkl"
+            self.sc_path = "model\sc_blog.pkl"
+            self.sc_title_path = "model\sc_blog_title.pkl"
+        elif mode == 3:
             self.classifier_path = "model\svm_shop.pkl"
             self.classifier_title_path = "model\svm_shop_title.pkl"
             self.sc_path = "model\sc_shop.pkl"
             self.sc_title_path = "model\sc_shop_title.pkl"
-        elif mode == 2:
-            self.classifier_path = "model\svm_others.pkl"
-            self.classifier_title_path = "model\svm_others_title.pkl"
-            self.sc_path = "model\sc_others.pkl"
-            self.sc_title_path = "model\sc_others_title.pkl"
 
         try:
             self.classifier = joblib.load(self.classifier_path)
@@ -32,13 +37,14 @@ class ContentExtractor:
         self.title_inputs = []
         self.contents = []
         for block in self.BlockList:
-            x = [block.x, block.y, block.w]
+            x = [block.x, block.y, block.w, block.h, block.fontsize]
             self.inputs.append(x)
         self.pred = self.classifier.predict(self.sc.transform(self.inputs))
+
         for index in range(len(self.BlockList)):
             block = self.BlockList[index]
             if self.pred[index] == 1:
-                x = [block.x, block.y, block.w, block.fontsize]
+                x = [block.x, block.y, block.w, block.h, block.fontsize]
                 self.title_inputs.append(x)
                 self.contents.append([block.type, block.content])
         self.pred_title = self.classifier_title.predict(self.sc_title.transform(self.title_inputs))
@@ -53,12 +59,4 @@ class ContentExtractor:
                 self.text.append(content[1])
             elif content[0] == "img":
                 self.image.append(content[1])
-        print("\ttitle")
-        for i in self.title:
-            print(i)
-        print("\ttext")
-        for i in self.text:
-            print(i)
-        print("\timage")
-        for i in self.image:
-            print(i)
+        return self.title, self.text, self.image
