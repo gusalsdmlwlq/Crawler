@@ -1,5 +1,6 @@
 import BlockMaker
 import ContentExtractor
+import sys
 
 
 class Crawler:
@@ -38,8 +39,17 @@ class Crawler:
         for image in self.images:
             print(image)
 
-
 crawler = Crawler("news")
-crawler.seturl("https://news.naver.com/main/ranking/read.nhn?mid=etc&sid1=111&rankingType=popular_day&oid=005&aid=0001187754&date=20190405&type=1&rankingSeq=1&rankingSectionId=100")
+crawler.seturl("https://news.naver.com/main/ranking/read.nhn?mid=etc&sid1=111&rankingType=popular_day&oid=119&aid=0002321301&date=20190405&type=1&rankingSeq=7&rankingSectionId=100")
+crawler.extract()
+crawler.show()
+
+crawler = Crawler("blog")
+crawler.seturl("https://blog.naver.com/eunji318/221505952095")
+crawler.extract()
+crawler.show()
+
+crawler = Crawler("shop")
+crawler.seturl("http://shopping.interpark.com/product/productInfo.do?prdNo=6087626322&dispNo=008022001")
 crawler.extract()
 crawler.show()

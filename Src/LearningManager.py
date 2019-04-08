@@ -95,7 +95,7 @@ class LearningManager:
         y_pred = self.classifer.predict(self.x_test)
         print("Test accuracy : ", f1_score(y_pred, self.y_test))
 
-
+# news training
 start = time.time()
 learningmanager = LearningManager(1)
 learningmanager.resetmodel()
@@ -103,21 +103,51 @@ learningmanager.readdata("dataset/train_news.csv")
 learningmanager.preprocessing()
 params = {"C": 10.0, "gamma": 0.2, "kernel": "rbf", "max_iter": 1500, "class_weight": {0: 0.1, 1: 0.9}}
 learningmanager.setmodel(params)
-print(learningmanager.classifer)
 learningmanager.fit()
-end = time.time()
-print(end-start, "seconds")
-
-###
-
-start = time.time()
 learningmanager = LearningManager(2)
 learningmanager.resetmodel()
 learningmanager.readdata("dataset/train_news_title.csv")
 learningmanager.preprocessing()
-params = {"C": 0.1, "gamma": 0.2, "kernel": "rbf", "max_iter": 500, "class_weight": {0: 0.2, 1: 0.8}}
+params = {"C": 0.1, "gamma": 0.2, "kernel": "rbf", "max_iter": 500, "class_weight": {0: 0.1, 1: 0.9}}
 learningmanager.setmodel(params)
-print(learningmanager.classifer)
+learningmanager.fit()
+end = time.time()
+print(end-start, "seconds")
+
+# blog training
+start = time.time()
+learningmanager = LearningManager(3)
+learningmanager.resetmodel()
+learningmanager.readdata("dataset/train_blog.csv")
+learningmanager.preprocessing()
+params = {"C": 0.1, "gamma": 1.0, "kernel": "rbf", "max_iter": 500, "class_weight": None}
+learningmanager.setmodel(params)
+learningmanager.fit()
+learningmanager = LearningManager(4)
+learningmanager.resetmodel()
+learningmanager.readdata("dataset/train_blog_title.csv")
+learningmanager.preprocessing()
+params = {"C": 100.0, "gamma": 1.0, "kernel": "rbf", "max_iter": 500, "class_weight": {0: 0.1, 1: 0.9}}
+learningmanager.setmodel(params)
+learningmanager.fit()
+end = time.time()
+print(end-start, "seconds")
+
+# shop training
+start = time.time()
+learningmanager = LearningManager(5)
+learningmanager.resetmodel()
+learningmanager.readdata("dataset/train_shop.csv")
+learningmanager.preprocessing()
+params = {"C": 1.0, "gamma": 1.0, "kernel": "rbf", "max_iter": 1000, "class_weight": None}
+learningmanager.setmodel(params)
+learningmanager.fit()
+learningmanager = LearningManager(6)
+learningmanager.resetmodel()
+learningmanager.readdata("dataset/train_shop_title.csv")
+learningmanager.preprocessing()
+params = {"C": 100.0, "gamma": 0.2, "kernel": "rbf", "max_iter": 500, "class_weight": {0: 0.2, 1: 0.8}}
+learningmanager.setmodel(params)
 learningmanager.fit()
 end = time.time()
 print(end-start, "seconds")
