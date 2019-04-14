@@ -7,11 +7,15 @@ class Crawler:
     def __init__(self, mode):
         self.blockmaker = BlockMaker.BlockMaker()
         self.url = ""
+        self.mode = ""
         if mode == 1 or mode == "news":
+            self.mode = " 1"
             self.extractor = ContentExtractor.ContentExtractor(1)
         elif mode == 2 or mode == "blog":
+            self.mode = " 2"
             self.extractor = ContentExtractor.ContentExtractor(2)
         elif mode == 3 or mode == "shop":
+            self.mode = " 3"
             self.extractor = ContentExtractor.ContentExtractor(3)
         else:
             raise ValueError("Select mode \"news\" or \"blog\" or \"shop\" for 1st argument!")
@@ -23,7 +27,7 @@ class Crawler:
         self.url = url
 
     def extract(self):
-        self.blockmaker.seturl(self.url)
+        self.blockmaker.seturl(self.url + self.mode)
         blocklist = self.blockmaker.makeblock()
         self.extractor.setblocklist(blocklist)
         self.titles, self.texts, self.images = self.extractor.extractcontent()

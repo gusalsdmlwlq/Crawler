@@ -105,7 +105,6 @@ news = [
     "https://news.naver.com/main/ranking/read.nhn?mid=etc&sid1=111&rankingType=popular_day&oid=022&aid=0003349846&date=20190327&type=1&rankingSeq=7&rankingSectionId=100"
 ]
 blog = [
-    "https://blog.naver.com/kmjlove1983/221453447130",
     "https://blog.naver.com/rim7033/221453444004",
     "https://blog.naver.com/usk4660/221453440830",
     "https://blog.naver.com/biby2004/221453440433",
@@ -187,8 +186,15 @@ shop=[
     "http://item.gmarket.co.kr/Item?goodscode=1562572595"
 ]
 
-creator.makecsv(news,1)
-# creator.makecsv(blog,2)
-# creator.makecsv(shop,3)
+for i in range(len(news)):
+    news[i] = news[i]+" 1"
+for i in range(len(blog)):
+    blog[i] = blog[i]+" 2"
+for i in range(len(shop)):
+    shop[i] = shop[i]+" 3"
+
+# creator.makecsv(news,1)
+creator.makecsv(blog,2)
+creator.makecsv(shop,3)
 end = time.time()
 print(end-start," secs")

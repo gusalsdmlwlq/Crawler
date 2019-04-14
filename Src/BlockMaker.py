@@ -108,7 +108,7 @@ class BlockMaker:
             block = Block.Block("text", content, x, y, w, h, fontsize)
         self.__BlockList.append(block)
         self.__nodeset.clear()
-        #print(block.type, block.content, block.x, block.y, block.w, block.h, block.fontsize)
+        # print(block.type, block.content, block.x, block.y, block.w, block.h, block.fontsize)
         self.width = [0, self.w]
 
     def seturl(self, url):
@@ -120,7 +120,7 @@ class BlockMaker:
         return self.__NodeList
 
 # blockmaker = BlockMaker()
-# blockmaker.seturl("https://news.naver.com/main/ranking/read.nhn?mid=etc&sid1=111&rankingType=popular_day&oid=016&aid=0001519348&date=20190405&type=1&rankingSeq=1&rankingSectionId=100")
+# blockmaker.seturl("https://blog.naver.com/nickykim156423/221453437556 2")
 # blocklist = blockmaker.makeblock()
 # extractor = ContentExtractor.ContentExtractor(1)
 # extractor.setblocklist(blocklist)

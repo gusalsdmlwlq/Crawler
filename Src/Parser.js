@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer');
 
-var url = process.argv[2];
+// var url_ = process.argv[2];
+// var url = url_.split(" ")[0];
+// var mode = url_.split(" ")[1];
 
 function printarray(array){
 	for(var i=0; i<array.length; i++){
@@ -19,18 +21,21 @@ function show(array){
 	}
 }
 
-async function parse(url){
+async function parse(url_){
+	var url = url_.split(" ")[0];
+	var mode = url_.split(" ")[1];
 	const browser = await puppeteer.launch({
-	    args: ["--no-sandbox", "--disable-web-security", "--user-data-dir=data", '--enable-features=NetworkService', '--start-fullscreen',  '--window-size=1920,1080']
+	    args: ["--no-sandbox", "--disable-web-security", "--user-data-dir=data", '--enable-features=NetworkService', '--start-fullscreen',  '--window-size=1920,1080', '--disable-dev-shm-usage']
 	});
 	const page = await browser.newPage();
 	await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36");
 	await page.goto(url);
 	await page.waitFor(3000);
-	const nodes = await page.evaluate((url) => {
+	const nodes = await page.evaluate((url,mode) => {
 		var bodywidth = document.body.scrollWidth;
 		var bodyheight = document.body.scrollHeight;
 		var y_max = 0;
+		var y_bottom = 0;
 		function getpos(node) {
 			var position = new Object;
 			position.x = 0;
@@ -61,6 +66,21 @@ async function parse(url){
 			if(link_domain != url_domain || link_machine != url_machine) return true;
 			else return false;
 		}
+
+		function checkdiv(node){ //ad => return 0
+			let childnodes = node.childNodes;
+			for(var i=0; i<childnodes.length; i++){
+				if(["DIV", "P", "SPAN"].includes(childnodes[i].nodeName)) continue;
+				if(childnodes[i].nodeName == "A"){
+					let href = childnodes[i].getAttribute("href");
+					if(href != "#") return 0;
+					if(checkad(href) == true) return 0;
+				}
+				if(checkdiv(childnodes[i]) == 0) return 0;
+			}
+			return 1;
+		}
+
 		function recur(root, indent, is_link, is_ad, framewidth, frameheight){
 			let contents = root.childNodes;
 			let result = new Array();
@@ -90,6 +110,7 @@ async function parse(url){
 						let x = getpos(node).x + node.offsetWidth / 2 + framewidth;
 						let y = getpos(node).y + node.clientTop + node.offsetHeight / 2 + frameheight;
 						if(x <= 0 || y <= 0) continue;
+						if(y_bottom != 0 && y >= y_bottom) continue;
 						attributes.push(x);
 						attributes.push(y);
 						let w = node.offsetWidth;
@@ -120,12 +141,13 @@ async function parse(url){
 						}
 					}
 					else if(node.nodeName == "IMG"){ //img node 체크
-						if(is_link == false){
+						if(isad == false){
 							attributes.push("img");
 							attributes.push(node.src);
 							let x = getpos(node).x + node.offsetWidth / 2 + framewidth;;
 							let y = getpos(node).y + node.offsetHeight / 2 + frameheight;
 							if(x <= 0 || y <= 0) continue;
+							if(y_bottom != 0 && y >= y_bottom) continue;
 							attributes.push(x);
 							attributes.push(y);
 							let w = node.offsetWidth;
@@ -139,14 +161,56 @@ async function parse(url){
 						}
 					}
 					if(node.childNodes != null && position != "fixed" && (z_index == "auto" || z_index < 10000)){
-						let islink = is_link;
-						if(node.nodeName == "A"){
-							let href = node.getAttribute("href");
-							if(href != "#") islink = true;
-							if(href == null || checkad(href) == true) isad = true;
+						if(mode == 2){
+							let islink = is_link;
+							if(node.nodeName == "A"){
+								let href = node.getAttribute("href");
+								if(href != "#") islink = true;
+								if(href == null || checkad(href) == true) isad = true;
+							}
+							if(node.nodeName == "UL") continue;
+							if(["DIV", "P", "SPAN"].includes(node.nodeName)){ 
+								let is_skip = 0;
+								node_class = node.getAttribute("class");
+								node_id = node.getAttribute("id");
+								let exp_bottom = [/comment/,/tag/,/bottom/,/ccl/];
+								let exp = [/category/,/plugin/,/player/];
+								for(var j=0; j<exp_bottom.length; j++){ //bottom 갱신
+									if(exp_bottom[j].test(node_class) || exp_bottom[j].test(node_id)){
+										is_skip = 1;
+										let y = getpos(node).y + node.offsetHeight / 2 + frameheight;
+										let w = node.offsetWidth;
+										let h = node.offsetHeight;
+										if((y_bottom == 0 || (y_bottom != 0 && y_bottom > y)) && w > 0 && h > 0) y_bottom = y;
+										break;
+									}
+								}
+								for(var j=0; j<exp.length; j++){ //category, plugin, player 제거
+									if(exp[j].test(node_class) || exp[j].test(node_id)){
+										is_skip = 1;
+										break;
+									}
+								}
+								if(is_skip == 1) continue;
+							}
+							result.push(recur(node,indent+1,islink,isad,newframewidth,newframeheight));
+							isad = is_ad;
 						}
-						result.push(recur(node,indent+1,islink,isad,newframewidth,newframeheight));
-						isad = is_ad;
+						else if(mode == 3){
+							if(["DIV", "P", "SPAN"].includes(node.nodeName) && checkdiv(node) == 0) continue;
+							if(node.nodeName == "UL") continue;
+							result.push(recur(node,indent+1,false,false,newframewidth,newframeheight));
+						}
+						else{
+							let islink = is_link;
+							if(node.nodeName == "A"){
+								let href = node.getAttribute("href");
+								if(href != "#") islink = true;
+								if(href == null || checkad(href) == true) isad = true;
+							}
+							result.push(recur(node,indent+1,islink,isad,newframewidth,newframeheight));
+							isad = is_ad;
+						}
 					}
 				}
 				result.push(attributes);
@@ -156,19 +220,19 @@ async function parse(url){
 		body = document.querySelector("body");
 		if(bodyheight <= 1000) return [recur(body,0,false,0,0,0), 1200, y_max];
 		return [recur(body,0,false,0,0,0), bodywidth, bodyheight];
-	}, url);
+	}, url,mode);
 	await browser.close();
 	await show(nodes);
 	await process.stdout.write(""+nodes[nodes.length-2]+"\n");
 	await process.stdout.write(""+nodes[nodes.length-1]+"\n");
-	await process.stdout.write(""+url);
+	await process.stdout.write(""+url+"\n");
 }
-parse(url);
-// process.stdin.setEncoding("utf-8");
-// process.stdout.setEncoding("utf-8");
-// process.stdin.on('readable', () => {
-// 	var url = process.stdin.read();
-// 	if(url){
-// 		parse(url);
-// 	}
-// });
+// parse(url,mode);
+process.stdin.setEncoding("utf-8");
+process.stdout.setEncoding("utf-8");
+process.stdin.on('readable', () => {
+	var url = process.stdin.read();
+	if(url){
+		parse(url);
+	}
+});
