@@ -25,9 +25,10 @@ async function parse(url_){
 	var url = url_.split(" ")[0];
 	var mode = url_.split(" ")[1];
 	const browser = await puppeteer.launch({
-	    args: ["--no-sandbox", "--disable-web-security", "--user-data-dir=data", '--enable-features=NetworkService', '--start-fullscreen',  '--window-size=1920,1080', '--disable-dev-shm-usage']
+	    args: ["--no-sandbox", "--disable-web-security", "--user-data-dir=data", '--enable-features=NetworkService', '--start-fullscreen',  '--window-size=1920,1080']
 	});
 	const page = await browser.newPage();
+	await page.on("error");
 	await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36");
 	await page.goto(url);
 	await page.waitFor(3000);
