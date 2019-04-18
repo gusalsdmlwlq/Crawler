@@ -1,55 +1,34 @@
 const puppeteer = require('puppeteer');
 
-// var url = process.argv[2];
+// var url_ = process.argv[2];
+// var url = url_.split(" ")[0];
+// var mode = url_.split(" ")[1];
 
-function printarray(array,bottom){
-	if(array[3]*1 > bottom) return;
+function printarray(array){
 	for(var i=0; i<array.length; i++){
 		if(typeof(array[i]) == "string") process.stdout.write(array[i].replace(/\n/gi, " ")+"\n");
 		else process.stdout.write(""+array[i]+"\n");
-	}	
+	}
 }
 
-function show(array,bottom){
+function show(array){
 	for(var i=0; i<array.length; i++){
 		if(typeof(array[i]) == "string"){
-			printarray(array,bottom);
+			printarray(array);
 			return;
 		}
-		else show(array[i],bottom);
+		else show(array[i]);
 	}
-}
-
-function checkbottom(bottoms,height){
-	var bottom = height;
-	var tags = bottoms[0];
-	var ccls = bottoms[1];
-	var comments = bottoms[2];
-	var tag_max = 0;
-	var ccl_max = 0;
-	var comment_max = 0;
-	for(var i=0; i<tags.length; i++){
-		if(tags[i] > tag_max) tag_max = tags[i];
-	}
-	for(var i=0; i<ccls.length; i++){
-		if(ccls[i] > ccl_max) ccl_max = ccls[i];
-	}
-	for(var i=0; i<comments.length; i++){
-		if(comments[i] > comment_max) comment_max = comments[i];
-	}
-	if(tag_max > height/2 && tag_max < bottom) bottom = tag_max;
-	if(ccl_max > height/2 && ccl_max < bottom) bottom = ccl_max;
-	if(comment_max > height/2 && comment_max < bottom) bottom = comment_max;
-	return bottom;
 }
 
 async function parse(url_){
 	var url = url_.split(" ")[0];
 	var mode = url_.split(" ")[1];
 	const browser = await puppeteer.launch({
-	    args: ["--no-sandbox", "--disable-web-security", "--user-data-dir=data", '--enable-features=NetworkService', '--start-fullscreen',  '--window-size=1920,1080', '--disable-dev-shm-usage']
+	    args: ["--no-sandbox", "--disable-web-security", "--user-data-dir=data", '--enable-features=NetworkService', '--start-fullscreen',  '--window-size=1920,1080']
 	});
 	const page = await browser.newPage();
+	await page.on("error");
 	await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36");
 	await page.goto(url);
 	await page.waitFor(3000);
@@ -58,9 +37,6 @@ async function parse(url_){
 		var bodyheight = document.body.scrollHeight;
 		var y_max = 0;
 		var y_bottom = 0;
-		var tags = new Array();
-		var ccls = new Array();
-		var comments = new Array();
 		function getpos(node) {
 			var position = new Object;
 			position.x = 0;
@@ -98,7 +74,8 @@ async function parse(url_){
 				if(["DIV", "P", "SPAN"].includes(childnodes[i].nodeName)) continue;
 				if(childnodes[i].nodeName == "A"){
 					let href = childnodes[i].getAttribute("href");
-					if((href == "#" || /javascript/.test(href)==true && href.length < 20)==false) return 0;
+					if(href != "#") return 0;
+					if(checkad(href) == true) return 0;
 				}
 				if(checkdiv(childnodes[i]) == 0) return 0;
 			}
@@ -177,7 +154,6 @@ async function parse(url_){
 							let w = node.offsetWidth;
 							let h = node.offsetHeight;
 							if(w <= 1 || h <= 1) continue;
-							if(y + h/2 > y_max) y_max = y + h/2;
 							attributes.push(w);
 							attributes.push(h);
 							attributes.push(0);
@@ -193,19 +169,20 @@ async function parse(url_){
 								if(href != "#") islink = true;
 								if(href == null || checkad(href) == true) isad = true;
 							}
+							if(node.nodeName == "UL") continue;
 							if(["DIV", "P", "SPAN"].includes(node.nodeName)){ 
 								let is_skip = 0;
 								node_class = node.getAttribute("class");
 								node_id = node.getAttribute("id");
-								let exp_bottom = [/tag/i,/ccl/i,/comment/i];
-								let exp = [/category/i,/plugin/i,/player/i,/map/i,/comment/i];
+								let exp_bottom = [/comment/,/tag/,/bottom/,/ccl/];
+								let exp = [/category/,/plugin/,/player/];
 								for(var j=0; j<exp_bottom.length; j++){ //bottom 갱신
 									if(exp_bottom[j].test(node_class) || exp_bottom[j].test(node_id)){
 										is_skip = 1;
 										let y = getpos(node).y + node.offsetHeight / 2 + frameheight;
-										if(j == 0) tags.push(y);
-										else if(j == 1) ccls.push(y);
-										else if(j == 2) comments.push(y);
+										let w = node.offsetWidth;
+										let h = node.offsetHeight;
+										if((y_bottom == 0 || (y_bottom != 0 && y_bottom > y)) && w > 0 && h > 0) y_bottom = y;
 										break;
 									}
 								}
@@ -222,6 +199,7 @@ async function parse(url_){
 						}
 						else if(mode == 3){
 							if(["DIV", "P", "SPAN"].includes(node.nodeName) && checkdiv(node) == 0) continue;
+							if(node.nodeName == "UL") continue;
 							result.push(recur(node,indent+1,false,false,newframewidth,newframeheight));
 						}
 						else{
@@ -241,18 +219,16 @@ async function parse(url_){
 			return result;
 		}
 		body = document.querySelector("body");
-		if(bodyheight <= 1000) return [recur(body,0,false,0,0,0), 1200, y_max, [tags,ccls,comments]];
-		return [recur(body,0,false,0,0,0), bodywidth, bodyheight, [tags,ccls,comments]];
+		if(bodyheight <= 1000) return [recur(body,0,false,0,0,0), 1200, y_max];
+		return [recur(body,0,false,0,0,0), bodywidth, bodyheight];
 	}, url,mode);
 	await browser.close();
-	var bottoms = await nodes.pop();
-	var bottom = await checkbottom(bottoms,nodes[nodes.length-1]);
-	await show(nodes,bottom);
+	await show(nodes);
 	await process.stdout.write(""+nodes[nodes.length-2]+"\n");
 	await process.stdout.write(""+nodes[nodes.length-1]+"\n");
 	await process.stdout.write(""+url+"\n");
 }
-// parse(url);
+// parse(url,mode);
 process.stdin.setEncoding("utf-8");
 process.stdout.setEncoding("utf-8");
 process.stdin.on('readable', () => {

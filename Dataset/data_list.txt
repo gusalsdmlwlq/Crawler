@@ -75,7 +75,6 @@ news - 70 - 5600 (4500:1100)
 
 blog - 40 - 6000 (4800 : 1200)
 	train
-    "https://blog.naver.com/kmjlove1983/221453447130",
     "https://blog.naver.com/rim7033/221453444004",
     "https://blog.naver.com/usk4660/221453440830",
     "https://blog.naver.com/biby2004/221453440433",
@@ -94,7 +93,7 @@ blog - 40 - 6000 (4800 : 1200)
     "https://ggumtree.tistory.com/210",
     "https://xuronghao.tistory.com/1504",
     "https://ramideunioni.tistory.com/105",
-    "https://blog.naver.com/miniworldgo/221454277016",
+    "https://blog.naver.com/vkeo3136/221514905385",
     "https://blog.naver.com/skyblue20726/221454208373",
     "https://blog.naver.com/nas6249/221454295519",
     "https://blog.naver.com/bluejive1004/221454212607",
@@ -105,27 +104,28 @@ blog - 40 - 6000 (4800 : 1200)
     "https://itqnara.tistory.com/64",
     "https://viewingcat.tistory.com/1655",
     "https://blog.naver.com/scpark1214/221498903460",
-    "https://blog.naver.com/kingsuda/221498902056",
+    "https://blog.naver.com/kingsuda/221498902056"
+	test
     "https://blog.naver.com/babyj_22/221498740725",
     "https://blog.naver.com/hellobangahi/221498537882",
-	test
-    "https://blog.naver.com/sesjes/221498245603",
+    "https://blog.naver.com/oblove3/221513661072",
     "https://blog.naver.com/daianab/221498585566",
     "https://blog.naver.com/geami6783/221498861413",
     "https://blog.naver.com/qkrtkfkd0525/221498710905",
     "https://blog.naver.com/qkrwjdgns488/221498562118",
     "https://blog.naver.com/dkswhdmswl55/221498503285",
-    "https://blog.naver.com/minahan/221498684660"
+    "https://blog.naver.com/minahan/221498684660",
+    "https://blog.naver.com/eunlord/221513470217"
 
 
-shop - 38 - 4400
+shop - 40 - 4400
 	train
     "http://shopping.interpark.com/product/productInfo.do?prdNo=5065709084&dispNo=001310&smid1=ad_recom",
     "http://shopping.interpark.com/product/productInfo.do?prdNo=2494043157&smid1=ssendeal&smid2=pd&smid3=0",
     "http://shopping.interpark.com/product/productInfo.do?prdNo=6248813497&smid1=ssendeal&smid2=pd&smid3=2",
     "http://shopping.interpark.com/product/productInfo.do?prdNo=5979205291",
     "http://shopping.interpark.com/product/productInfo.do?prdNo=6245957454",
-    "http://shopping.interpark.com/product/productInfo.do?prdNo=6169921543",
+    "http://shopping.interpark.com/product/productInfo.do?prdNo=5303859594&dispNo=008022001",
     "http://shopping.interpark.com/product/productInfo.do?prdNo=6080045139&smid1=popular&smid2=digitalelectronics&smid3=prd",
     "http://shopping.interpark.com/product/productInfo.do?prdNo=6210949058&dispNo=001110101",
     "http://shopping.interpark.com/product/productInfo.do?prdNo=6257040582&dispNo=001110217&smid1=md_recom",
@@ -148,8 +148,9 @@ shop - 38 - 4400
     "https://front.wemakeprice.com/product/142281140",
     "https://front.wemakeprice.com/product/115995461",
     "https://front.wemakeprice.com/product/101575236",
-    "http://shopping.interpark.com/product/productInfo.do?prdNo=4855016010",
-    "http://shopping.interpark.com/product/productInfo.do?prdNo=5133915886&dispNo=008014004",
+    "https://front.wemakeprice.com/deal/600149149",
+    "https://front.wemakeprice.com/deal/600161557"
+    
 	test    
     "http://shopping.interpark.com/product/productInfo.do?prdNo=6431695606&dispNo=008022001",
     "http://shopping.interpark.com/product/productInfo.do?prdNo=6388995211&dispNo=008022001",
@@ -157,5 +158,7 @@ shop - 38 - 4400
     "http://shopping.interpark.com/product/productInfo.do?prdNo=204227717&dispNo=008001087",
     "http://shopping.interpark.com/product/productInfo.do?prdNo=6282942189&dispNo=008022001",
     "http://shopping.interpark.com/product/productInfo.do?prdNo=4115874046&dispNo=008001087",
-    "http://item.gmarket.co.kr/Item?goodscode=1579440373",
-    "http://item.gmarket.co.kr/Item?goodscode=1562572595"
+    "http://item.gmarket.co.kr/detailview/item.asp?goodscode=1516490262",
+    "http://item.gmarket.co.kr/Item?goodscode=1562572595",
+    "http://shopping.interpark.com/product/productInfo.do?prdNo=4855016010",
+    "http://shopping.interpark.com/product/productInfo.do?prdNo=5133915886&dispNo=008014004"
