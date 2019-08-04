@@ -180,15 +180,15 @@ X,Y 좌표 / X,Y 좌표와 넓이 / PCA를 사용해 5차원의 특징을 3차�
 
 * 뉴스
 
-  * 다른 도메인 또는 다른 머신으로 링크가 연결된 <a> tag의 노드를 제거
+  * 다른 도메인 또는 다른 머신으로 링크가 연결된 ```<a>``` tag의 노드를 제거
 
 * 블로그
 
-  * 다른 도메인 또는 다른 머신으로 링크가 연결된 <a> tag의 노드를 제거
+  * 다른 도메인 또는 다른 머신으로 링크가 연결된 ```<a> ```tag의 노드를 제거
 
-  * id나 class 이름에 category, plugin, player, map이 포함된 <div>, <p>, <span>, <dl>tag의 노드를 제거
+  * id나 class 이름에 category, plugin, player, map이 포함된 ```<div>, <p>, <span>, <dl>```tag의 노드를 제거
 
-  * id나 class 이름에 tag, ccl, comment, #post이 포함된 <div>, <p>, <span>, <dl> tag의 노드중에서 y좌표가 50%를 넘어가는 노드들을 모두 찾음
+  * id나 class 이름에 tag, ccl, comment, #post이 포함된 ```<div>, <p>, <span>, <dl> ```tag의 노드중에서 y좌표가 50%를 넘어가는 노드들을 모두 찾음
 
     y좌표가 가장 높은(가장 아래쪽에 있는) tag, ccl, comment, #post를 각각 찾음
 
@@ -197,7 +197,8 @@ X,Y 좌표 / X,Y 좌표와 넓이 / PCA를 사용해 5차원의 특징을 3차�
     bottom line아래에 위치한 노드들을 전부 제거
 
 * 쇼핑몰
-  * 링크가 걸린 a태그의 가장 가까운 부모 <div>, <p>, <span>을 찾아서 제거
+  
+  * 링크가 걸린 a태그의 가장 가까운 부모 ```<div>, <p>, <span>```을 찾아서 제거
 
 ## 결과 & 성능
 
